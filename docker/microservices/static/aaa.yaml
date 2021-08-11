@@ -1,0 +1,2494 @@
+openapi: 3.0.0
+info:
+  title: SKOR App
+  version: '1.0'
+  summary: API Documentation for SKOR Project
+  description: |-
+    This API documentation is for Singapore Management Univerisity's SKOR Project. This project aims to develop an application which can ease the class participation workload for Teaching Assistants, Faculties and Instructors and enhance the overall class participation experience for Students. 
+
+    Our API accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes and authentication. Our application uses microservices architecture, which arranges an application as a collection of loosely-coupled services. In a microservices architecture, services are fine-grained and the protocols are lightweight.
+
+    Technologies used: 
+    - Python Flask
+    - SQLAlchemy 
+    - Javascript
+    - Docker
+    - Xampp
+
+    Check out our SKOR website [here!](http://skor.smu.edu.sg/)
+
+    Check out our SKOR Github [here!](https://github.com/SkorSMU/SKOR)
+  contact:
+    email: benjamingan@smu.edu.sg
+    name: Benjamin Gan
+servers:
+  - url: 'http://localhost:8081'
+  - url: 'http://localhost:8082'
+  - url: 'http://localhost:8083'
+  - url: 'http://localhost:8084'
+  - url: 'http://localhost:8085'
+  - url: 'http://localhost:8086'
+  - url: 'http://localhost:8090'
+  - url: 'http://localhost:8091'
+  - url: 'http://localhost:8092'
+  - url: 'http://localhost:8093'
+  - url: 'http://localhost:8094'
+  - url: 'http://localhost:8095'
+tags:
+  - name: Path
+    description: Url path rendering
+  - name: User
+    description: 'Microservice handling different users (Admin, Student, Faculty, Instructor), Student''s Enrolment and User''s password reset'
+  - name: Term
+    description: Academic Year and Term for SMU
+  - name: Course
+    description: Information about all courses and which Academic Term it is offered
+  - name: Section
+    description: All Sections for a Course and Student Priority List in each Section
+  - name: Session
+    description: 'All Sessions (weeks) for a Section, Participation record of Students and Student total Participation Score for each Session'
+  - name: Log
+    description: Logging of all Participation Score changes
+  - name: Raise Hand
+    description: Everything about live Raise Hand session
+  - name: Login
+    description: Login Authentication
+  - name: Import
+    description: Importing of files
+  - name: Display Information
+    description: Display information for frontend
+  - name: Update Class Participation
+    description: Update database when making changes to Student's Participation and Participation Score
+  - name: Report Issue
+    description: For users to report issues
+paths:
+  /:
+    get:
+      summary: Home Page
+      tags:
+        - Path
+      responses: {}
+      operationId: get-index
+      description: Redirect to SKOR homepage.
+    parameters: []
+  '/{path}':
+    get:
+      summary: Render Page
+      tags:
+        - Path
+      responses: {}
+      operationId: get-path
+      description: Redirects to url path in SKOR application.
+      parameters: []
+    parameters:
+      - schema:
+          type: string
+        name: path
+        in: path
+        required: true
+        description: url path
+  /addAdmin:
+    post:
+      summary: Create Admin
+      operationId: post-addAdmin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin successfully created.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin created.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occured when creating the new admin.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    required:
+                      - email
+                      - name
+                      - password
+                      - lastLogin
+                      - isLogin
+                    properties:
+                      email:
+                        type: string
+                        minLength: 1
+                      name:
+                        type: string
+                        minLength: 1
+                      password:
+                        type: string
+                        minLength: 1
+                      lastLogin:
+                        type: string
+                        minLength: 1
+                      isLogin:
+                        type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example-1:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occured when creating the new admin.
+                Example-2:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Input is not in JSON format.
+      description: Create an Admin user account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  email: admin@example.com
+                  name: Admin
+                  password: password
+              properties:
+                email:
+                  type: string
+                  minLength: 1
+                  format: email
+                name:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 100
+                  description: user input password
+                  format: password
+              required:
+                - email
+                - name
+                - password
+            examples:
+              Example:
+                value:
+                  email: admin@example.com
+                  name: Admin
+                  password: password
+        description: ''
+      parameters: []
+      tags:
+        - User
+  '/getAdmin/{email}':
+    get:
+      summary: Get Admin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Successfully retrieved admin.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin retrieved.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin not found.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    required:
+                      - email
+                      - name
+                      - password
+                      - lastLogin
+                      - isLogin
+                    properties:
+                      email:
+                        type: string
+                        minLength: 1
+                      name:
+                        type: string
+                        minLength: 1
+                      password:
+                        type: string
+                        minLength: 1
+                      lastLogin:
+                        type: string
+                        minLength: 1
+                      isLogin:
+                        type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin not found.
+      operationId: get-getAdmin
+      description: Retrieve an Admin user account by email
+      x-internal: false
+      tags:
+        - User
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: admin email
+  '/updateAdminInfo/{email}':
+    put:
+      summary: Update Admin Information
+      operationId: put-updateAdminInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data: 1
+                    message: ss
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin information updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin information.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin information.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when udpating admin information.
+      description: Update Admin user account information
+      tags:
+        - User
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: admin name
+        - schema:
+            type: integer
+            minimum: 0
+            maximum: 1
+          in: query
+          name: isLogin
+          description: admin login status
+        - schema:
+            type: string
+          in: query
+          name: lastLogin
+          description: admin last login datetime
+      x-internal: true
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        description: admin email
+        required: true
+  '/updateAdminPassword/{email}/{password}':
+    put:
+      summary: Update Admin Password
+      operationId: put-updateAdminPassword
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin information.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin password updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin information.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin information.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating admin password.
+      tags:
+        - User
+      description: Update Admin account password. User input password will be hashed before saving to database.
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: admin email
+      - schema:
+          type: string
+        name: password
+        in: path
+        required: true
+        description: new password input
+  '/deleteAdmin/{email}':
+    delete:
+      summary: Delete Admin
+      operationId: delete-deleteAdmin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin password.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin deleted.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin password.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Updated admin password.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Admin'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when deleting the admin
+      tags:
+        - User
+      description: Delete Admin user account
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: Admin email
+  /addFaculty:
+    post:
+      summary: Add Faculty
+      operationId: post-addFaculty
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin created.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty created and email has been sent.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin created.
+                properties:
+                  code:
+                    type:
+                      - number
+                      - integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example 1:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when creating the new faculty.
+                Example 2:
+                  value:
+                    code: 500
+                    message: Input is not JSON
+      description: Add a Faculty user account and sends an email to inform user to change the default password generated for his account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  email: faculty@example.com
+                  name: Faculty
+              properties:
+                email:
+                  type: string
+                  minLength: 1
+                  format: email
+                name:
+                  type: string
+                  minLength: 1
+              required:
+                - email
+                - name
+            examples:
+              Example:
+                value:
+                  email: faculty@example.com
+                  name: Faculty
+        description: ''
+      tags:
+        - User
+  '/getFaculty/{email}':
+    get:
+      summary: Get Faculty
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty created and email has been sent.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty Retrieved.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 404
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty not found.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty not found.
+      operationId: get-getFaculty
+      description: Retrieve an Faculty user account by email
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: Faculty email
+  /getAllFaculty:
+    get:
+      summary: Get all Faculty
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      facultyList:
+                        - email: john.doe@email.com
+                          name: John Doe
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:21:22.892Z'
+                          isLogin: 0
+                        - email: sarah.ong@email.com
+                          name: Sarah Ong
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:51:22.892Z'
+                          isLogin: 0
+                    message: All faculty retrieved.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    required:
+                      - facultyList
+                    properties:
+                      facultyList:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      facultyList:
+                        - email: john.doe@email.com
+                          name: John Doe
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:21:22.892Z'
+                          isLogin: 0
+                        - email: sarah.ong@email.com
+                          name: Sarah Ong
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:51:22.892Z'
+                          isLogin: 0
+                    message: All faculty retrieved.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: All faculty retrieved.
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    message: No faculty found.
+      operationId: get-getAllFaculty
+      description: Retrieve all Faculty user accounts
+    parameters: []
+  '/updateFacultyInfo/{email}':
+    put:
+      summary: Update Faculty Information
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: admin01@email.com
+                      name: Admin
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Admin information updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty information updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 404
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the faculty.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 404
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the faculty.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the faculty information.
+      operationId: put-updateFacultyInfo
+      description: Update Faculty user account information
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: faculty name
+        - schema:
+            type: string
+          in: query
+          name: isLogin
+          description: faculty login status
+        - schema:
+            type: string
+          in: query
+          name: lastLogin
+          description: faculty last login datetime
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: Faculty email
+  '/updateFacultyPassword/{email}/{password}':
+    put:
+      summary: Update Faculty Password
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the faculty password.
+      operationId: put-updateFacultyPassword
+      description: Update Faculty account password. User input password will be hashed before saving to database.
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: faculty email
+      - schema:
+          type: string
+        name: password
+        in: path
+        required: true
+        description: new password input
+  '/deleteFaculty/{email}':
+    delete:
+      summary: Delete Faculty
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty deleted.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when deleting the faculty.
+      operationId: delete-deleteFaculty
+      description: Delete a Faculty user account
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: faculty email
+  /addInstructor:
+    post:
+      summary: Add Instructor
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor created and email has been sent.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor created and email has been sent.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor created and email has been sent.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example 1:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when creating the new instructor.
+                Example 2:
+                  value:
+                    code: 500
+                    message: Input is not JSON.
+      operationId: post-addInstructor
+      description: Add a Instructor user account and sends an email to inform user to change the default password generated for his account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                email:
+                  type: string
+                  minLength: 1
+                name:
+                  type: string
+                  minLength: 1
+              required:
+                - email
+                - name
+              x-examples:
+                example-1:
+                  email: faculty@example.com
+                  name: Faculty
+            examples:
+              Example:
+                value:
+                  email: instructor@example.com
+                  name: Instructor
+  '/getInstructor/{email}':
+    get:
+      summary: Get Instructor
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty Retrieved.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor retrieved.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty Retrieved.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor not found.
+      operationId: get-getInstructor
+      description: Retrieve an Instructor user account by email
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: instructor email
+  /getAllInstructors:
+    get:
+      summary: Get All Instructor
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      instructorList:
+                        - email: john.doe@email.com
+                          name: John Doe
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:21:22.892Z'
+                          isLogin: 0
+                        - email: sarah.ong@email.com
+                          name: Sarah Ong
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:51:22.892Z'
+                          isLogin: 0
+                    message: All instructor retrieved.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    type: object
+                    required:
+                      - instructorList
+                    properties:
+                      instructorList:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      instructorList:
+                        - email: john.doe@email.com
+                          name: John Doe
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:21:22.892Z'
+                          isLogin: 0
+                        - email: sarah.ong@email.com
+                          name: Sarah Ong
+                          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                          lastLogin: '2021-10-01T11:51:22.892Z'
+                          isLogin: 0
+                    message: All instructor retrieved.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: All instructor retrieved.
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    message: No instructor found.
+      operationId: get-getAllInstructors
+      description: Retrieved all Instructor user accounts
+  '/updateInstructorInfo/{email}':
+    put:
+      summary: Update Instructor Information
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty information updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor information updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: Faculty information updated.
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    message: Instructor not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: faculty@email.com
+                      name: Faculty
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty information updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the instructor information.
+      operationId: put-updateInstructorInfo
+      description: Update Instructor user account information
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: instructor name
+        - schema:
+            type: string
+          in: query
+          name: isLogin
+          description: instructor login status
+        - schema:
+            type: string
+          in: query
+          name: lastLogin
+          description: instructor last login status
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: instructor email
+  '/updateInstructorPassword/{email}/{password}':
+    put:
+      summary: Update Instructor Password
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor password updated.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    message: Instructor not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty password updated.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when updating the instructor password.
+      operationId: put-updateInstructorPassword
+      description: Update Instructor account password. User input password will be hashed before saving to database.
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: instructor email
+      - schema:
+          type: string
+        name: password
+        in: path
+        required: true
+        description: new password input
+  '/deleteInstructor/{email}':
+    delete:
+      summary: Delete Instructor
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty deleted.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Instructor deleted.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty deleted.
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 404
+                    message: Instructor not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    code: 200
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: Faculty deleted.
+                properties:
+                  code:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - code
+                  - data
+                  - message
+              examples:
+                Example:
+                  value:
+                    code: 500
+                    data:
+                      email: john.doe@email.com
+                      name: John Doe
+                      password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+                      lastLogin: '2021-10-01T11:21:22.892Z'
+                      isLogin: 0
+                    message: An error occurred when deleting the instructor.
+      operationId: delete-deleteInstructor
+      description: Delete an Instructor user account
+    parameters:
+      - schema:
+          type: string
+        name: email
+        in: path
+        required: true
+        description: instructor email
+components:
+  schemas:
+    Admin:
+      description: Admin account
+      type: object
+      x-examples:
+        example-1:
+          email: example@example.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-01-01T12:11:11.876Z'
+          isLogin: 0
+      title: Admin
+      examples:
+        - email: admin01@email.com
+          name: Admin
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-10-01T11:21:22.892Z'
+          isLogin: 0
+      properties:
+        email:
+          type: string
+          minLength: 1
+          format: email
+        name:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 100
+        lastLogin:
+          type: string
+          minLength: 1
+          description: latest login datetime
+          default: 'null'
+        isLogin:
+          type: integer
+          minimum: 0
+          maximum: 1
+          description: '0: not logged in, 1: logged in'
+          default: 0
+      required:
+        - email
+        - name
+        - password
+        - lastLogin
+        - isLogin
+    Student:
+      description: Student account
+      type: object
+      x-examples:
+        example-1:
+          email: example@example.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-01-01T12:11:11.876Z'
+          isLogin: 0
+      title: Student
+      examples:
+        - email: john.doe@email.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-10-01T11:21:22.892Z'
+          isLogin: 0
+      properties:
+        email:
+          type: string
+          minLength: 1
+          format: email
+        name:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 100
+        lastLogin:
+          type: string
+          minLength: 1
+          description: latest login datetime
+          default: 'null'
+        isLogin:
+          type: integer
+          minimum: 0
+          maximum: 1
+          description: '0: not logged in, 1: logged in'
+          default: 0
+      required:
+        - email
+        - name
+        - password
+        - lastLogin
+        - isLogin
+    Faculty:
+      description: Faculty account
+      type: object
+      x-examples:
+        example-1:
+          email: example@example.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-01-01T12:11:11.876Z'
+          isLogin: 0
+      title: Faculty
+      examples:
+        - email: john.doe@email.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-10-01T11:21:22.892Z'
+          isLogin: 0
+      properties:
+        email:
+          type: string
+          minLength: 1
+          format: email
+        name:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 100
+        lastLogin:
+          type: string
+          minLength: 1
+          description: |
+            latest login datetime
+          default: 'null'
+        isLogin:
+          type: integer
+          minimum: 0
+          maximum: 1
+          description: '0: not logged in, 1: logged in'
+          default: 0
+      required:
+        - email
+        - name
+        - password
+        - lastLogin
+        - isLogin
+    Instructor:
+      description: Instructor account
+      type: object
+      x-examples:
+        example-1:
+          email: example@example.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-01-01T12:11:11.876Z'
+          isLogin: 0
+      title: Instructor
+      examples:
+        - email: john.doe@email.com
+          name: John Doe
+          password: $5$rounds=535000$w1GFsVmIG8WtMhtD$CIz4TFY07mYTE9bgWGpfvm6T5Bud5Lvvk24QzlUEfUC
+          lastLogin: '2021-10-01T11:21:22.892Z'
+          isLogin: 0
+      properties:
+        email:
+          type: string
+          minLength: 1
+          format: email
+        name:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 100
+        lastLogin:
+          type: string
+          minLength: 1
+          description: latest login datetime
+          default: 'null'
+        isLogin:
+          type: integer
+          minimum: 0
+          maximum: 1
+          description: '0: not logged in, 1: logged in'
+          default: 0
+      required:
+        - email
+        - name
+        - password
+        - lastLogin
+        - isLogin
+    TATerm:
+      description: Student who is a teaching assistant in an academic term
+      type: object
+      x-examples:
+        example-1:
+          email: john.doe@email.com
+          acadYear: AY2021-22
+          termNo: 1
+      examples:
+        - email: user@example.com
+          acadYear: AY2021-22
+          termNo: 1
+      title: TATerm
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        acadYear:
+          type: string
+          minLength: 1
+          description: academic year
+        termNo:
+          type: integer
+          minimum: 1
+          maximum: 2
+          description: term number
+      required:
+        - email
+        - acadYear
+        - termNo
+    Enrolment:
+      description: Student's enrolment into a section for course in an academic term
+      type: object
+      x-examples:
+        example-1:
+          acadYear: AY2021-22
+          termNo: 1
+          courseCode: IS211
+          sectionNo: 1
+          studentEmail: user@example.com
+      properties:
+        acadYear:
+          type: string
+          minLength: 1
+          description: academic year
+        termNo:
+          type: integer
+          minimum: 1
+          maximum: 2
+          description: term number
+        courseCode:
+          type: string
+          minLength: 1
+          description: course code
+        sectionNo:
+          type: integer
+          description: section number
+          minimum: 1
+          maximum: 45
+        studentEmail:
+          type: string
+          minLength: 1
+          description: student email
+          format: email
+      required:
+        - acadYear
+        - termNo
+        - courseCode
+        - sectionNo
+        - studentEmail
+      examples:
+        - acadYear: AY2021-22
+          termNo: 1
+          courseCode: IS211
+          sectionNo: 1
+          studentEmail: user@example.com
+      title: Enrolment
+  securitySchemes: {}
